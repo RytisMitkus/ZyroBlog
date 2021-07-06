@@ -61,14 +61,12 @@ const loginUser = (req, res) => {
         console.log(email, password)
         connection.query(`SELECT * FROM users WHERE email='${email}' AND password='${password}';`, (err, result) => {
             connection.release();
-            console.log(result)
-            if (!err) {
+            if (result.length > 0) {
                 res.json(result)
             } else {
-
                 res.json({
                     error: true,
-                    msg: `User with email - ${email} already exists`
+                    msg: `E-mail of password is incorrect`
                 })
             }
             return result

@@ -4,15 +4,12 @@ const registerUser = (req, res) => {
     const user = req.body
     const { firstName, lastName, email, password, isAdmin } = user
 
-    const registerSql = `INSERT INTO users (FirstName, LastName, password, email, isAdmin) VALUES ('${firstName}', '${lastName}', '${password}', '${email}', '${isAdmin || 0}');`
-
     pool.getConnection((err, connection) => {
 
-        connection.query(registerSql, (err, result) => {
+        connection.query(`INSERT INTO users (FirstName, LastName, password, email, isAdmin) VALUES ('${firstName}', '${lastName}', '${password}', '${email}', '${isAdmin}');`, (err, result) => {
             connection.release();
 
             if (!err) {
-                console.log(result)
                 res.json({
                     isAdmin,
                     email,
@@ -21,7 +18,6 @@ const registerUser = (req, res) => {
                 })
             } else {
                 console.log(err)
-                console.log(result)
                 res.json({
                     error: true,
                     msg: `User with email - ${email} already exists`
@@ -51,7 +47,7 @@ const getUsers = (req, res) => {
             } else {
                 res.json({
                     error: true,
-                    msg: `User with email - ${email} already exists`
+                    msg: `Something went wrong, please contact administrator`
                 })
             }
             return result
@@ -59,4 +55,26 @@ const getUsers = (req, res) => {
     })
 }
 
-module.exports = { registerUser, getUsers }
+const loginUser = (req, res) => {
+    pool.getConnection((err, connection) => {
+        const { email, password } = req.body
+        console.log(email, password)
+        connection.query(`SELECT * FROM users WHERE email='${email}' AND password='${password}';`, (err, result) => {
+            connection.release();
+            console.log(result)
+            if (!err) {
+                res.json(result)
+            } else {
+
+                res.json({
+                    error: true,
+                    msg: `User with email - ${email} already exists`
+                })
+            }
+            return result
+        })
+    })
+
+}
+
+module.exports = { registerUser, getUsers, loginUser }

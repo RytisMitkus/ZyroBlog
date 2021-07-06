@@ -15,7 +15,7 @@ app.use(morgan('tiny'))
 
 const port = process.env.PORT || 4000
 
-app.use('/user', userRoutes)
+app.use('/api/users', userRoutes)
 
 app.listen(port, () => {
     console.log(`Server is listening at http://localhost:${port}`)

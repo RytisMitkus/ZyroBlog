@@ -14,7 +14,6 @@ function setupMysqlPool(options) {
         if (err) {
             const errorMsg = E_ERROR_CODES[err.code] || 'DB pool error';
             logger.log(errorMsg, err);
-            // eslint-disable-next-line no-console
             console.error(errorMsg, err);
         }
         if (connection) {

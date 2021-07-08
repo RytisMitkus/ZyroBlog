@@ -1,31 +1,24 @@
 const db = require('../mysql/db')
+const asyncHandler = require('express-async-handler')
+const userRepository = require('../repositories/UserRepository');
+const userService = require('../services/UserService')({
+    userRepository,
+});
 
-const registerUser = (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
     const user = req.body
     const { firstName, lastName, email, password, isAdmin } = user
 
+    await userService.isUserEmailAvailableForRegistration(email);
 
-
-    db.query(`INSERT INTO users (FirstName, LastName, password, email, isAdmin) VALUES ('${firstName}', '${lastName}', '${password}', '${email}', '${isAdmin}');`, (err, result) => {
-
-        if (!err) {
-            res.json({
-                isAdmin,
-                email,
-                firstName,
-                login: true
-            })
-        } else {
-            console.log(err)
-            res.json({
-                error: true,
-                msg: `User with email - ${email} already exists`
-            })
-        }
-        return result
+    await userRepository.insertNewUser(user)
+    res.json({
+        isAdmin,
+        email,
+        firstName,
+        login: true
     })
-
-}
+})
 
 const getUsers = (req, res) => {
     db.query(`SELECT * FROM users;`, (err, result) => {
@@ -52,7 +45,7 @@ const getUsers = (req, res) => {
 
 const loginUser = (req, res) => {
     const { email, password } = req.body
-    console.log(email, password)
+
     db.query(`SELECT * FROM users WHERE email='${email}' AND password='${password}';`, (err, result) => {
         if (result.length > 0) {
             res.json(result)

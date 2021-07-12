@@ -7,6 +7,7 @@ module.exports = {
                 changeOrigin: true,
             },
         },
-        progress: false
+        progress: false,
     },
+
 }

@@ -3,6 +3,7 @@ const db = require('../mysql/db')
 async function insertNewUser(user) {
 	return (await db.query('INSERT INTO users SET ?', [user]));
 }
+
 async function checkEmailExists(email) {
 	const [user] = await db.query(
 		'SELECT 1 FROM users WHERE email=? LIMIT 1',
@@ -11,4 +12,9 @@ async function checkEmailExists(email) {
 	return user;
 }
 
-module.exports = { insertNewUser, checkEmailExists }
+async function getUserByEmail(email) {
+
+	return (await db.query(`SELECT * FROM users WHERE email=?`, [email]))
+}
+
+module.exports = { insertNewUser, checkEmailExists, getUserByEmail }

@@ -10,6 +10,8 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(morgan('tiny'))
 
+
+
 const port = process.env.PORT || 4000
 
 app.use('/api/users', userRoutes)
@@ -28,22 +30,15 @@ app.use((err, req, res, next) => {
         // eslint-disable-next-line no-param-reassign
         err.message = 'Error 500. Database error';
     }
+    console.log(err)
     res.status(err.status || 500).json({
         error: err.status || 500,
         message: typeof err === 'string'
             ? err : err.message || 'Error 500. Internal server error',
     });
-    if (process.env.NODE_ENV !== 'test') {
-        // eslint-disable-next-line no-console
-        console.error(err);
-        if (err.isAxiosError) {
-            // eslint-disable-next-line no-console
-            console.log(err.config.data);
-            // eslint-disable-next-line no-console
-            console.log(err.response.data);
-        }
-    }
+
 });
+
 app.listen(port, () => {
     console.log(`Server is listening at http://localhost:${port}`)
 })

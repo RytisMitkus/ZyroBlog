@@ -11,11 +11,14 @@
   "author": "Rytis Mitkus@Zyro",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "concurrently": "^6.2.0",
+    "connect-history-api-fallback": "^1.6.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "http-errors": "^1.7.2",
+    "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1"
   },

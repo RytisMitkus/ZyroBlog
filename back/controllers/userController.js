@@ -9,69 +9,72 @@ const userService = require('../services/UserService')({
 const jwtGenerate = require('../utils/jwtGenerator')
 
 const registerUser = asyncHandler(async (req, res) => {
-    const user = req.body
-    const { firstName, lastName, email, password, isAdmin } = user
-    await userService.isUserEmailAvailableForRegistration(email);
-
-
+    // destructure incoming user data
+    const { firstName, lastName, email, password } = req.body
+    // check if email is taken
+    const newUser = await userService.isUserEmailAvailableForRegistration(email);
+    // preprare user data to insert to db
     const userData = {
-        isAdmin,
         email,
         firstName,
         lastName,
         password: password ? await bcrypt.hash(password, Number(process.env.SALT_ROUNDS)) : ''
     }
-    await userRepository.insertNewUser(userData)
+    // insert user and retrieve user_id
+    const { insertId } = await userRepository.insertNewUser(userData)
+    // respond json with user data to store in local storage / go straight to dashboard
     res.json({
-        isAdmin,
         email,
         firstName,
+        lastName,
+        token: jwtGenerate({ email, user_id: insertId }),
         login: true
     })
 })
 
 const loginUser = asyncHandler(async (req, res) => {
+    // get user by email from db
     const { email } = req.body
-
     const userDetails = await userService.getUserDetailsByEmail(email)
 
     if (!userDetails) {
         throw createError(401, 'Email or password incorrect.');
     }
-    const { password, ...user } = userDetails[0];
-    // console.log(req.body.password, password)
+    // deconstruct password and compare to hashed one
+    const { password, firstName, lastName, user_id } = userDetails[0];
     const passwordMatch = await bcrypt.compare(req.body.password, password);
     if (!passwordMatch) {
         throw createError(401, 'Email or password incorrect.');
     }
-    // token: jwtGenerate(id)
-
-    res.json({ ...user, token: jwtGenerate(email) })
+    // respond with jwt and user details/ login
+    res.json({
+        email,
+        firstName,
+        lastName,
+        token: jwtGenerate({ email, user_id }),
+        login: true
+    })
 })
 
-const getUsers = (req, res) => {
-    db.query(`SELECT * FROM users;`, (err, result) => {
-        if (!err) {
-            const usersList = result.map((user) => {
-                const filteredUser = {
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    isAdmin: user.isAdmin
-                }
-                return filteredUser
-            })
-            res.json(usersList)
-        } else {
-            res.json({
-                error: true,
-                msg: `Something went wrong, please contact administrator`
-            })
+const getUsers = asyncHandler(async (req, res) => {
+
+    const allUsersDetails = await userService.getAllUsers()
+
+    if (!allUsersDetails) {
+        createError(401, 'Something went wrong, please contact administrator.')
+    }
+
+    const filteredUsersDetails = allUsersDetails.map(user => {
+        const filteredUser = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            isAdmin: user.isAdmin
         }
-        return result
+        return filteredUser
     })
-}
+    res.json(filteredUsersDetails)
 
-
+})
 
 module.exports = { registerUser, getUsers, loginUser }

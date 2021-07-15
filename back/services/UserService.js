@@ -13,4 +13,9 @@ module.exports = ({
     async getUserDetailsByEmail(email) {
         return await userRepository.getUserByEmail(email);
     },
+
+    async getAllUsers() {
+        return await userRepository.getAllUsersDetails()
+    }
+
 })

@@ -9,7 +9,7 @@ router.route('/')
     .get(protect, admin, getUsers)
 
 router.route('/login')
-    .get(loginUser)
+    .post(loginUser)
 
 
 module.exports = router;

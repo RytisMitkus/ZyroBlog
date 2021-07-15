@@ -13,8 +13,11 @@ async function checkEmailExists(email) {
 }
 
 async function getUserByEmail(email) {
-
 	return (await db.query(`SELECT * FROM users WHERE email=?`, [email]))
 }
 
-module.exports = { insertNewUser, checkEmailExists, getUserByEmail }
+async function getAllUsersDetails() {
+	return (await db.query('SELECT * FROM users'))
+}
+
+module.exports = { insertNewUser, checkEmailExists, getUserByEmail, getAllUsersDetails }

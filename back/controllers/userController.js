@@ -57,13 +57,13 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 
 const getUsers = asyncHandler(async (req, res) => {
-
+    // get all users from db
     const allUsersDetails = await userService.getAllUsers()
 
     if (!allUsersDetails) {
         createError(401, 'Something went wrong, please contact administrator.')
     }
-
+    // filter from password/only relevant info
     const filteredUsersDetails = allUsersDetails.map(user => {
         const filteredUser = {
             firstName: user.firstName,
@@ -74,7 +74,6 @@ const getUsers = asyncHandler(async (req, res) => {
         return filteredUser
     })
     res.json(filteredUsersDetails)
-
 })
 
 module.exports = { registerUser, getUsers, loginUser }

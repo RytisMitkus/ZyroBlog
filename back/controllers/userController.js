@@ -8,11 +8,15 @@ const userService = require('../services/UserService')({
 });
 const jwtGenerate = require('../utils/jwtGenerator')
 
+// @desc    Register and send token
+// @route   POST /api/users/register
+// @access  Public
+
 const registerUser = asyncHandler(async (req, res) => {
     // destructure incoming user data
     const { firstName, lastName, email, password } = req.body
     // check if email is taken
-    const newUser = await userService.isUserEmailAvailableForRegistration(email);
+    await userService.isUserEmailAvailableForRegistration(email);
     // preprare user data to insert to db
     const userData = {
         email,
@@ -32,6 +36,9 @@ const registerUser = asyncHandler(async (req, res) => {
     })
 })
 
+// @desc    Auth user and send token
+// @route   POST /api/users/login
+// @access  Public
 const loginUser = asyncHandler(async (req, res) => {
     // get user by email from db
     const { email } = req.body
@@ -56,6 +63,9 @@ const loginUser = asyncHandler(async (req, res) => {
     })
 })
 
+// @desc    Auth user & get token
+// @route   GET /api/users/
+// @access  Private/Admin
 const getUsers = asyncHandler(async (req, res) => {
     // get all users from db
     const allUsersDetails = await userService.getAllUsers()
@@ -63,7 +73,7 @@ const getUsers = asyncHandler(async (req, res) => {
     if (!allUsersDetails) {
         createError(401, 'Something went wrong, please contact administrator.')
     }
-    // filter from password/only relevant info
+    // filter password/only relevant info
     const filteredUsersDetails = allUsersDetails.map(user => {
         const filteredUser = {
             firstName: user.firstName,
@@ -76,4 +86,11 @@ const getUsers = asyncHandler(async (req, res) => {
     res.json(filteredUsersDetails)
 })
 
-module.exports = { registerUser, getUsers, loginUser }
+// @desc    Get user profile
+// @route   GET /api/users/profile
+// @access  Private
+const getUserProfile = asyncHandler(async (req, res) => {
+    res.json(req.user)
+})
+
+module.exports = { registerUser, getUsers, loginUser, getUserProfile }

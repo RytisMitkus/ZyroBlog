@@ -16,6 +16,9 @@ module.exports = ({
 
     async getAllUsers() {
         return await userRepository.getAllUsersDetails()
+    },
+    async updateUser(user) {
+        return await userRepository.updateUser(user);
     }
 
 })

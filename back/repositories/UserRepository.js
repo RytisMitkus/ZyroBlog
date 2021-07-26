@@ -19,5 +19,8 @@ async function getUserByEmail(email) {
 async function getAllUsersDetails() {
 	return (await db.query('SELECT * FROM users'))
 }
+async function updateUser(user) {
+	return (await db.query('UPDATE users SET ? WHERE id=?', [user, user.id]));
+}
 
 module.exports = { insertNewUser, checkEmailExists, getUserByEmail, getAllUsersDetails }

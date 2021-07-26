@@ -16,10 +16,6 @@ const port = process.env.PORT || 4000
 
 app.use('/api/users', userRoutes)
 
-app.get('/test', (req, res) => {
-    res.json({ hey: 'hey' })
-})
-
 app.use((err, req, res, next) => {
     if (err.status === 422) {
         res.status(422).json(err.errors);
@@ -30,7 +26,6 @@ app.use((err, req, res, next) => {
         // eslint-disable-next-line no-param-reassign
         err.message = 'Error 500. Database error';
     }
-    console.log(err)
     res.status(err.status || 500).json({
         error: err.status || 500,
         message: typeof err === 'string'

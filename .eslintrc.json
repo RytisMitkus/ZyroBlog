@@ -11,6 +11,9 @@
         "ecmaVersion": 12
     },
     "rules": {
-        "vue/no-multiple-template-root": "off"
+        "semi": [
+            2,
+            "never"
+        ]
     }
 }

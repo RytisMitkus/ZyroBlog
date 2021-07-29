@@ -58,17 +58,13 @@ export default {
     };
   },
   methods: {
-    onSubmit() {
-      this.$store
-        .dispatch("register", {
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.email,
-          password: this.password,
-        })
-        .then(() => {
-          this.$router.push("/login");
-        });
+    async onSubmit() {
+      await this.$store.dispatch("register", {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        password: this.password,
+      });
     },
   },
 };

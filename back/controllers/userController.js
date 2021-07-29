@@ -59,13 +59,15 @@ const loginUser = asyncHandler(async (req, res) => {
     throw createError(401, 'Email or password incorrect.')
   }
   // respond with jwt and user details/ login
-  res.json({
+  const user = {
     email,
     firstName,
     lastName,
     token: jwtGenerate({ email, user_id }),
-    login: true,
-  })
+  }
+  res.json(
+    user,
+  )
 })
 
 // @desc    Auth user & get token

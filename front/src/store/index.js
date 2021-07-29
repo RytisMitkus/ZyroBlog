@@ -6,15 +6,23 @@ export default createStore({
     user: {},
   },
   mutations: {
+    setUser(state, payload) {
+      state.user = payload
+    },
   },
   actions: {
-    async  register(context, {
+    async register({ commit }, {
       firstName, lastName, email, password,
     }) {
-      const registerUser = await axios.post('/api/users', {
-        firstName, lastName, email, password,
-      })
-      console.log(registerUser)
+      try {
+        const data = await axios.post('/api/users', {
+          firstName, lastName, email, password,
+        })
+
+        commit('setUser', data)
+      } catch (e) {
+        console.log(e.response)
+      }
     },
   },
   modules: {

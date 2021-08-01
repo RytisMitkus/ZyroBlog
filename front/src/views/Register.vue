@@ -1,7 +1,6 @@
 <template>
   <div class="container m-auto">
-    <!-- flex flex-col justify-center align-space-around -->
-    <!-- <h1 class="text-red-700">Register Page</h1> -->
+    <h1 class="text-gray-700">Sign in</h1>
     <div class="flex flex-col items-center">
       <input
         type="text"
@@ -42,6 +41,7 @@
       >
         Register
       </button>
+      <p v-if="errMsg">{{ errMsg }}</p>
     </div>
   </div>
 </template>
@@ -55,16 +55,18 @@ export default {
       lastName: "",
       email: "",
       password: "",
+      errMsg: "",
     };
   },
   methods: {
     async onSubmit() {
-      await this.$store.dispatch("register", {
+      const reg = await this.$store.dispatch("register", {
         firstName: this.firstName,
         lastName: this.lastName,
         email: this.email,
         password: this.password,
       });
+      this.errMsg = reg;
     },
   },
 };

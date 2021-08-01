@@ -30,11 +30,12 @@ const registerUser = asyncHandler(async (req, res) => {
   const { insertId } = await userRepository.insertNewUser(userData)
   // respond json with user data to store in local storage / go straight to dashboard
   res.json({
-    email,
+    user_id: insertId,
     firstName,
     lastName,
+    email,
     token: jwtGenerate({ email, user_id: insertId }),
-    login: true,
+    isAuth: true,
   })
 })
 
@@ -64,6 +65,7 @@ const loginUser = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     token: jwtGenerate({ email, user_id }),
+    isAuth: true,
   }
   res.json(
     user,
@@ -97,7 +99,7 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
-  res.json(req.user)
+  res.json(req.token)
 })
 
 const updateUserProfile = asyncHandler(async (req, res) => {

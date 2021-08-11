@@ -1,5 +1,18 @@
 <template>
-  <h1>Profile page</h1>
+  <div>
+    <h1>Profile page</h1>
+    <label
+      >Your name
+      <input type="text" :value="user.firstName" disabled />
+    </label>
+    <label
+      >Your lastname <input type="text" :value="user.lastName" disabled
+    /></label>
+    <label>
+      Your email
+      <input type="text" :value="user.email" disabled />
+    </label>
+  </div>
 </template>
 
 <script>

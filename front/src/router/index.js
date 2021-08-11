@@ -20,16 +20,20 @@ const routes = [
     component: () => import('../views/Login.vue'),
   },
   {
-    path: '/logout',
-    name: 'Logout',
-    component: () => import('../views/Logout.vue'),
-  },
-  {
     path: '/profile',
     name: 'Profile',
     component: () => import('../views/Profile.vue'),
     meta: {
       requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (!store.state.user.user.isAuth) {
+        next({
+          path: '/login',
+        })
+      } else {
+        next()
+      }
     },
   },
 ]
